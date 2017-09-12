@@ -40,8 +40,8 @@ def transcribe_file(speech_file):
 
     audio = types.RecognitionAudio(content=content)
     config = types.RecognitionConfig(
-        encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=16000,
+        #encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
+        #sample_rate_hertz=16000,
         language_code='en-US')
 
     # [START migration_async_response]
@@ -49,12 +49,19 @@ def transcribe_file(speech_file):
     # [END migration_async_request]
 
     print('Waiting for operation to complete...')
-    response = operation.result(timeout=90)
+    response = operation.result(timeout=900)
 
     # Print the first alternative of all the consecutive results.
+    message = ''
+    print('TRANSCRIPTION PARTS:')
     for result in response.results:
         print('Transcript: {}'.format(result.alternatives[0].transcript))
         print('Confidence: {}'.format(result.alternatives[0].confidence))
+        print('----')
+        message += '{}'.format(result.alternatives[0].transcript)
+
+    print('COMPLETE TRANSCRIBED MESSAGE:')
+    print('{}'.format(message))
     # [END migration_async_response]
 # [END def_transcribe_file]
 
@@ -69,19 +76,27 @@ def transcribe_gcs(gcs_uri):
 
     audio = types.RecognitionAudio(uri=gcs_uri)
     config = types.RecognitionConfig(
-        encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
-        sample_rate_hertz=16000,
+        #encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
+        #sample_rate_hertz=16000,
         language_code='en-US')
 
     operation = client.long_running_recognize(config, audio)
 
     print('Waiting for operation to complete...')
-    response = operation.result(timeout=90)
+    response = operation.result(timeout=900)
 
     # Print the first alternative of all the consecutive results.
+    message = ''
+    print('TRANSCRIPTION PARTS:')
     for result in response.results:
         print('Transcript: {}'.format(result.alternatives[0].transcript))
         print('Confidence: {}'.format(result.alternatives[0].confidence))
+        print('----')
+        message += '{}'.format(result.alternatives[0].transcript)
+
+    print('COMPLETE TRANSCRIBED MESSAGE:')
+    print('{}'.format(message))
+
 # [END def_transcribe_gcs]
 
 
